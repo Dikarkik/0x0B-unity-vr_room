@@ -3,20 +3,29 @@
 public class Teleportation : MonoBehaviour
 {
     public SpriteRenderer image;
-    public Transform cameraTransform;
-    private Vector3 newPosition;
+    public Transform player;
+    private Vector3 newPosition = Vector3.zero;
     
     private void Start()
     {
-        // Start in black
+        // Fade in
         Color c = image.color;
         c.a = 1;
         image.color = c;
-        
-        FadeOut();
+        FadeIn();
     }
 
-    public void FadeIn(Vector3 position)
+    private void FadeIn()
+    {
+        LeanTween.value(image.gameObject, 1, 0, 1f).setOnUpdate((float val) =>
+        {
+            Color c = image.color;
+            c.a = val;
+            image.color = c;
+        });
+    }
+    
+    public void FadeOut(Vector3 position)
     {
         newPosition.x = position.x;
         newPosition.y = position.y + 1.8f;
@@ -29,20 +38,10 @@ public class Teleportation : MonoBehaviour
             image.color = c;
         }).setOnComplete(SetNewPosition);
     }
-
+    
     private void SetNewPosition()
     {
-        cameraTransform.position = newPosition;
-        FadeOut();
-    }
-
-    private void FadeOut()
-    {
-        LeanTween.value(image.gameObject, 1, 0, 1f).setOnUpdate((float val) =>
-        {
-            Color c = image.color;
-            c.a = val;
-            image.color = c;
-        });
+        player.position = newPosition;
+        FadeIn();
     }
 }

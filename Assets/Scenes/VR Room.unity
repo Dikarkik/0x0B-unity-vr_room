@@ -3869,7 +3869,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 964460319}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.286, y: 0.169, z: 5.465}
+  m_LocalPosition: {x: 4.43, y: 0.91, z: 5.465}
   m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_Children: []
   m_Father: {fileID: 337365996}
@@ -8772,11 +8772,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fea0fa17ddcbd741949d77d6d928a9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hand: {fileID: 924475511}
   pointer: {fileID: 515847840}
   feedbackImages:
   - {fileID: 518969038}
   - {fileID: 13721663}
-  hand: {fileID: 924475511}
 --- !u!114 &1136318575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8790,7 +8790,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 1957379201}
-  cameraTransform: {fileID: 1136318571}
+  player: {fileID: 1136318571}
 --- !u!1001 &1145436476
 PrefabInstance:
   m_ObjectHideFlags: 0
