@@ -15,6 +15,7 @@ public class CameraRaycast : MonoBehaviour
     
     // Feedback
     public SpriteRenderer pointer;
+    private Color colorTransparent;
     private int currentFeedback;
     public SpriteRenderer[] feedbackImages;
     // [0] -> pointing to the floor
@@ -24,11 +25,11 @@ public class CameraRaycast : MonoBehaviour
     {
         teleportationScript = GetComponent<Teleportation>();
         hand.gameObject.SetActive(false);
+        colorTransparent = new Color(0, 0, 0, 0);
     }
     
     private void Update()
     {
-        // TO DO: Quitar puntero cuando hace teleport
         // TO DO: _pickUpDistance para recoger object
         
         // Casts ray towards camera's forward direction, to detect if a GameObject is being gazed at.
@@ -48,8 +49,6 @@ public class CameraRaycast : MonoBehaviour
                 else
                     _gazedAtObject = null;
             }
-            
-            Feedback();
         }
         else if (_gazedAtObject)
         {
@@ -57,25 +56,23 @@ public class CameraRaycast : MonoBehaviour
             _gazedAtObject.SendMessage("OnPointerExit");
             _gazedAtObject = null;
         }
-
+        
+        HitFeedback();
+        
         // Checks for screen touches.
         if (Google.XR.Cardboard.Api.IsTriggerPressed || Input.GetKeyDown(KeyCode.Space))
         {
             //_gazedAtObject?.SendMessage("OnPointerClick");
             
-            TriggerPressed(currentFeedback);
-            
-            if (_gazedAtObject && !_pickedObject)
-                PickUpObject();
-            else if (_pickedObject)
-                DropObject(_pickedObject);
+            if (hit.collider)
+                TriggerPressed();
         }
     }
     
-    private void PickUpObject()
+    private void PickUpObject(GameObject obj)
     {
         hand.gameObject.SetActive(true);
-        _pickedObject = _gazedAtObject;
+        _pickedObject = obj;
         _pickedObject.GetComponent<Rigidbody>().useGravity = false;
         _pickedObject.transform.parent = hand;
         _pickedObject.transform.localPosition = new Vector3(0, -1.3f, 0);
@@ -93,55 +90,39 @@ public class CameraRaycast : MonoBehaviour
         hand.gameObject.SetActive(false);
     }
 
-    private void Feedback()
+    private void HitFeedback()
     {
+        if (!hit.collider)
+        {
+            pointer.color = Color.red;
+            SetFeedbackImage(-1);
+            return;
+        }
+            
         switch (hit.transform.tag)
         {
             case "Floor":
-                pointer.color = Color.green;
-                feedbackImages[0].color = Color.white;
+                pointer.color = colorTransparent;
                 feedbackImages[0].transform.position = hit.point;
-                EnableFeedbackSpriteRenderer(0);
+                SetFeedbackImage(0);
                 break;
             case "Interactable":
                 pointer.color = Color.green;
-                EnableFeedbackSpriteRenderer(-1);
+                SetFeedbackImage(-1);
                 break;
             case "Locked":
-                pointer.color = Color.blue;
-                feedbackImages[1].color = Color.white;
+                pointer.color = Color.green;
                 feedbackImages[1].transform.position = new Vector3(hit.point.x, hit.point.y, hit.point.z - 0.1f);
-                EnableFeedbackSpriteRenderer(1);
+                SetFeedbackImage(1);
                 break;
             default:
                 pointer.color = Color.red;
-                EnableFeedbackSpriteRenderer(-1);
+                SetFeedbackImage(-1);
                 break;
         }
     }
     
-    private void TriggerPressed(int feedback)
-    {
-        switch (feedback)
-        {
-            case 0: // floor
-                teleportationScript.FadeOut(hit.point);
-                pointer.color = Color.yellow;
-                feedbackImages[0].color = Color.yellow;
-                EnableFeedbackSpriteRenderer(0);
-                break;
-            case 1:
-                pointer.color = Color.blue;
-                EnableFeedbackSpriteRenderer(1);
-                break;
-            default:
-                pointer.color = Color.red;
-                EnableFeedbackSpriteRenderer(-1);
-                break;
-        }
-    }
-
-    private void EnableFeedbackSpriteRenderer(int newFeedback)
+    private void SetFeedbackImage(int newFeedback)
     {
         if (newFeedback != currentFeedback)
         {
@@ -153,6 +134,27 @@ public class CameraRaycast : MonoBehaviour
             for (int i = 0; i < feedbackImages.Length; i++)
                 if (i != currentFeedback)
                     feedbackImages[i].enabled = false;
+        }
+    }
+    
+    private void TriggerPressed()
+    {
+        switch (hit.transform.tag)
+        {
+            case "Floor": // floor
+                teleportationScript.FadeOut(hit.point);
+                break;
+            case "Interactable":
+                if (_pickedObject)
+                    DropObject(_pickedObject);
+                else
+                    PickUpObject(_gazedAtObject);
+                break;
+            case "Locked":
+                break;
+            default:
+                DropObject(_pickedObject);
+                break;
         }
     }
 }
