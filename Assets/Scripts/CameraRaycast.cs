@@ -20,6 +20,7 @@ public class CameraRaycast : MonoBehaviour
     public SpriteRenderer[] feedbackImages;
     // [0] -> pointing to the floor
     // [1] -> pointing locked object (door)
+    public GameObject goCloserMessage;
     
     private void Start()
     {
@@ -148,7 +149,12 @@ public class CameraRaycast : MonoBehaviour
                 if (_pickedObject)
                     DropObject(_pickedObject);
                 else
-                    PickUpObject(_gazedAtObject);
+                {
+                    if (hit.distance < 1.8f)
+                        PickUpObject(_gazedAtObject);
+                    else
+                        goCloserMessage.SetActive(true);
+                }
                 break;
             case "Locked":
                 break;
