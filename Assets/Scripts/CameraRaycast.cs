@@ -1,10 +1,17 @@
 ﻿using UnityEngine;
 
+public enum ObjectType
+{
+    None,
+    BatteryCube,
+    BatteryCylinder,
+}
+
 public class CameraRaycast : MonoBehaviour
 {
     // Rayacast
     private const float _maxDistance = 35;
-    private const float _pickUpDistance = 0.5f;
+    private const float _pickUpDistance = 3.5f;
     private GameObject _gazedAtObject = null;
     private GameObject _pickedObject = null;
     private RaycastHit hit;
@@ -15,12 +22,11 @@ public class CameraRaycast : MonoBehaviour
     
     // Feedback
     public SpriteRenderer pointer;
+    public SpriteRenderer floorPointer;
     private Color colorTransparent;
-    private int currentFeedback;
-    public SpriteRenderer[] feedbackImages;
-    // [0] -> pointing to the floor
-    // [1] -> pointing locked object (door)
     public GameObject goCloserMessage;
+    public GameObject actionRequiredMessage;
+    public GameObject workingWellMessage;
     
     private void Start()
     {
@@ -31,8 +37,6 @@ public class CameraRaycast : MonoBehaviour
     
     private void Update()
     {
-        // TO DO: _pickUpDistance para recoger object
-        
         // Casts ray towards camera's forward direction, to detect if a GameObject is being gazed at.
         if (Physics.Raycast(transform.position, transform.forward, out hit, _maxDistance))
         {
@@ -64,9 +68,7 @@ public class CameraRaycast : MonoBehaviour
         if (Google.XR.Cardboard.Api.IsTriggerPressed || Input.GetKeyDown(KeyCode.Space))
         {
             //_gazedAtObject?.SendMessage("OnPointerClick");
-            
-            if (hit.collider)
-                TriggerPressed();
+            TriggerPressed();
         }
     }
     
@@ -88,61 +90,50 @@ public class CameraRaycast : MonoBehaviour
         _pickedObject.GetComponent<Rigidbody>().useGravity = true;
         _pickedObject.transform.parent = null;
         _pickedObject = null;
-        hand.gameObject.SetActive(false);
     }
 
+    public GameObject GetPickedObject()
+    {
+        return _pickedObject ? _pickedObject : null;
+    }
+
+    public void DisablePickedObject()
+    {
+        if (_pickedObject)
+        {
+            _pickedObject.GetComponent<Interactable>().enabled = false;
+            _pickedObject.GetComponent<Collider>().enabled = false;
+            _pickedObject.SetActive(false);
+            _pickedObject = null;
+        }
+    }
+    
     private void HitFeedback()
     {
-        if (!hit.collider)
-        {
-            pointer.color = Color.red;
-            SetFeedbackImage(-1);
-            return;
-        }
-            
         switch (hit.transform.tag)
         {
             case "Floor":
                 pointer.color = colorTransparent;
-                feedbackImages[0].transform.position = hit.point;
-                SetFeedbackImage(0);
+                floorPointer.color = Color.white;
+                floorPointer.transform.position = hit.point;
                 break;
             case "Interactable":
+            case "InteractableStatic":
                 pointer.color = Color.green;
-                SetFeedbackImage(-1);
-                break;
-            case "Locked":
-                pointer.color = Color.green;
-                feedbackImages[1].transform.position = new Vector3(hit.point.x, hit.point.y, hit.point.z - 0.1f);
-                SetFeedbackImage(1);
+                floorPointer.color = colorTransparent;
                 break;
             default:
                 pointer.color = Color.red;
-                SetFeedbackImage(-1);
+                floorPointer.color = colorTransparent;
                 break;
         }
     }
-    
-    private void SetFeedbackImage(int newFeedback)
-    {
-        if (newFeedback != currentFeedback)
-        {
-            currentFeedback = newFeedback;
-            
-            if (currentFeedback != -1)
-                feedbackImages[currentFeedback].enabled = true;
-            
-            for (int i = 0; i < feedbackImages.Length; i++)
-                if (i != currentFeedback)
-                    feedbackImages[i].enabled = false;
-        }
-    }
-    
+
     private void TriggerPressed()
     {
         switch (hit.transform.tag)
         {
-            case "Floor": // floor
+            case "Floor":
                 teleportationScript.FadeOut(hit.point);
                 break;
             case "Interactable":
@@ -150,16 +141,21 @@ public class CameraRaycast : MonoBehaviour
                     DropObject(_pickedObject);
                 else
                 {
-                    if (hit.distance < 1.8f)
+                    if (hit.distance < _pickUpDistance)
                         PickUpObject(_gazedAtObject);
                     else
                         goCloserMessage.SetActive(true);
                 }
                 break;
-            case "Locked":
+            case "InteractableStatic":
+                if (hit.distance < _pickUpDistance)
+                    hit.transform.SendMessage("OnPointerClick");
+                else
+                    goCloserMessage.SetActive(true);
                 break;
             default:
-                DropObject(_pickedObject);
+                if (_pickedObject)
+                    DropObject(_pickedObject);
                 break;
         }
     }

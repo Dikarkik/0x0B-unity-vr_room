@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 
 public class MessageText : MonoBehaviour
@@ -24,5 +25,10 @@ public class MessageText : MonoBehaviour
             c.a = val;
             text.color = c;
         }).setOnComplete(() => gameObject.SetActive(false));
+    }
+
+    public void SetText(String newText)
+    {
+        text.text = newText;
     }
 }
