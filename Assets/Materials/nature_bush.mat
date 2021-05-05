@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: nature_leaves
+  m_Name: nature_bush
   m_Shader: {fileID: 10511, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: _ALPHATEST_ON
   m_LightmapFlags: 5
@@ -36,6 +36,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DetailTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -45,7 +49,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 144d5c35043c7f04193d57dc3c38bbcb, type: 3}
+        m_Texture: {fileID: 2800000, guid: e183aa09c01ee5b49b32b70535924240, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -64,33 +68,41 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _TranslucencyMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AO: 0.37
-    - _BaseLight: 0.237
+    - _AO: 0
+    - _BaseLight: 1
     - _BumpScale: 1
-    - _Cutoff: 0.406
+    - _Cull: 2
+    - _Cutoff: 0.481
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _Glossiness: 0
+    - _Glossiness: 1
     - _Metallic: 0
     - _Mode: 1
-    - _Occlusion: 0.2
+    - _Occlusion: 3.3
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _ShadowStrength: 0.653
+    - _ShadowStrength: 0.847
     - _Shininess: 0.078125
     - _SquashAmount: 1
     - _SrcBlend: 1
-    - _TranslucencyViewDependency: 0
+    - _TranslucencyViewDependency: 0.073
     - _UVSec: 0
+    - _WindQuality: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.7152667, g: 0.8308824, b: 0.53152037, a: 1}
+    - _Color: {r: 0.039443612, g: 1, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _TranslucencyColor: {r: 0.27581, g: 0.9558824, b: 0.1475995, a: 1}
+    - _HueVariation: {r: 1, g: 0.5, b: 0, a: 0.1}
+    - _SpecColor: {r: 0, g: 0, b: 0, a: 0}
+    - _TranslucencyColor: {r: 0.61810195, g: 0.8897059, b: 0.431769, a: 1}
     - _TreeInstanceColor: {r: 1, g: 1, b: 1, a: 1}
     - _TreeInstanceScale: {r: 1, g: 1, b: 1, a: 1}

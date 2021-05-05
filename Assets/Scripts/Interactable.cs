@@ -2,15 +2,12 @@
 
 public class Interactable : MonoBehaviour
 {
-    private CameraRaycast cameraRaycastScript;
     private Material material;
     private Color emissionColor;
     public ObjectType objectType;
     
     void Start()
     {
-        cameraRaycastScript = FindObjectOfType<CameraRaycast>();
-        
         // Emission Intensity
         // https://forum.unity.com/threads/setting-material-emission-intensity-in-script-to-match-ui-value.661624/
         material = GetComponent<Renderer>().material;
@@ -34,6 +31,6 @@ public class Interactable : MonoBehaviour
     
     private void OnCollisionEnter(Collision other)
     {
-        cameraRaycastScript.DropObject(gameObject);
+        CameraRaycast.script.DropObject(this.gameObject);
     }
 }

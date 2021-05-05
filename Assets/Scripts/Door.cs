@@ -2,13 +2,12 @@
 
 public class Door : MonoBehaviour
 {
-    private CameraRaycast cameraRaycastScript;
     private bool isLocked = true;
     private Animator animator;
 
     void Start()
     {
-        cameraRaycastScript = FindObjectOfType<CameraRaycast>();
+        CameraRaycast.script = FindObjectOfType<CameraRaycast>();
         Rotor.onRotorReady += UnlockDoor;
         animator = transform.parent.GetComponent<Animator>();
     }
@@ -21,14 +20,11 @@ public class Door : MonoBehaviour
     public void OnPointerClick()
     {
         if (!isLocked)
-        {
-            Debug.Log("abrir puerta");
             animator.SetBool("character_nearby", true);
-        }
         else
         {
-            cameraRaycastScript.actionRequiredMessage.GetComponent<MessageText>().SetText($"door locked");
-            cameraRaycastScript.actionRequiredMessage.SetActive(true);
+            CameraRaycast.script.alertMessage.GetComponent<MessageText>().SetText($"locked door");
+            CameraRaycast.script.alertMessage.SetActive(true);
         }
     }
 }

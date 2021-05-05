@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
+
 public delegate void OnRotorReady();
 
 public class Rotor : MonoBehaviour
 {
-    private CameraRaycast cameraRaycastScript;
-    
     // puzzle
     private int totalInPlace = 0;
     private ObjectType[] requiredObjects =
@@ -23,28 +22,23 @@ public class Rotor : MonoBehaviour
     public GameObject light;
     public GameObject screenMessage;
     public static event OnRotorReady onRotorReady;
-    
-    void Start()
-    {
-        cameraRaycastScript = FindObjectOfType<CameraRaycast>();
-    }
-    
+
     public void OnPointerClick()
     {
         // When the puzzle is done show the message "Working well"
         if (totalInPlace == requiredObjects.Length)
         {
-            cameraRaycastScript.workingWellMessage.SetActive(true);
+            CameraRaycast.script.fineMessage.SetActive(true);
             return;
         }
 
-        // When the player do not have any object in hand show the message "Batteries ?/?"
-        var pickedObject = cameraRaycastScript.GetPickedObject();
+        // When the player don't have an object: show the message "Batteries ?/?"
+        var pickedObject = CameraRaycast.script.GetPickedObject();
         
         if (!pickedObject)
         {
-            cameraRaycastScript.actionRequiredMessage.GetComponent<MessageText>().SetText($"batteries {totalInPlace}/{requiredObjects.Length}");
-            cameraRaycastScript.actionRequiredMessage.SetActive(true);
+            CameraRaycast.script.alertMessage.GetComponent<MessageText>().SetText($"batteries {totalInPlace}/{requiredObjects.Length}");
+            CameraRaycast.script.alertMessage.SetActive(true);
             return;
         }
 
@@ -57,7 +51,7 @@ public class Rotor : MonoBehaviour
             if (type == requiredObjects[i] && !objectsInPlace[i])
             {
                 // Disable Collider and Interatable. And clean '_pickedObject' variable.
-                cameraRaycastScript.DisablePickedObject();
+                CameraRaycast.script.DisablePickedObject();
 
                 // Activate Battery
                 pickedObject.transform.position = objectPositions[i].position;
@@ -74,7 +68,8 @@ public class Rotor : MonoBehaviour
                 {
                     light.SetActive(true);
                     screenMessage.SetActive(true);
-                    cameraRaycastScript.workingWellMessage.SetActive(true);
+                    CameraRaycast.script.fineMessage.GetComponent<MessageText>().SetText($"working well");
+                    CameraRaycast.script.fineMessage.SetActive(true);
                     onRotorReady();
                 }
                 
@@ -83,7 +78,7 @@ public class Rotor : MonoBehaviour
         }
         
         // When the object is not a required Object or isn't a missing object
-        cameraRaycastScript.actionRequiredMessage.GetComponent<MessageText>().SetText($"invalid object");
-        cameraRaycastScript.actionRequiredMessage.SetActive(true);
+        CameraRaycast.script.alertMessage.GetComponent<MessageText>().SetText($"invalid object");
+        CameraRaycast.script.alertMessage.SetActive(true);
     }
 }

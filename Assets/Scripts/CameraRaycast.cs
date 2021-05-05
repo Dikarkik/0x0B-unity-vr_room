@@ -5,10 +5,14 @@ public enum ObjectType
     None,
     BatteryCube,
     BatteryCylinder,
+    Mug
 }
 
 public class CameraRaycast : MonoBehaviour
 {
+    // Access to this script
+    public static CameraRaycast script;
+    
     // Rayacast
     private const float _maxDistance = 35;
     private const float _pickUpDistance = 3.5f;
@@ -25,13 +29,13 @@ public class CameraRaycast : MonoBehaviour
     public SpriteRenderer floorPointer;
     private Color colorTransparent;
     public GameObject goCloserMessage;
-    public GameObject actionRequiredMessage;
-    public GameObject workingWellMessage;
+    public GameObject alertMessage;
+    public GameObject fineMessage;
     
     private void Start()
     {
+        script = this;
         teleportationScript = GetComponent<Teleportation>();
-        hand.gameObject.SetActive(false);
         colorTransparent = new Color(0, 0, 0, 0);
     }
     
@@ -62,24 +66,33 @@ public class CameraRaycast : MonoBehaviour
             _gazedAtObject = null;
         }
         
-        HitFeedback();
+        PointerFeedback();
         
         // Checks for screen touches.
         if (Google.XR.Cardboard.Api.IsTriggerPressed || Input.GetKeyDown(KeyCode.Space))
-        {
-            //_gazedAtObject?.SendMessage("OnPointerClick");
             TriggerPressed();
-        }
     }
     
     private void PickUpObject(GameObject obj)
     {
-        hand.gameObject.SetActive(true);
         _pickedObject = obj;
         _pickedObject.GetComponent<Rigidbody>().useGravity = false;
         _pickedObject.transform.parent = hand;
-        _pickedObject.transform.localPosition = new Vector3(0, -1.3f, 0);
-        _pickedObject.transform.localRotation = Quaternion.identity;
+
+        // Set position and rotation
+        var type = obj.GetComponent<Interactable>().objectType;
+        
+        switch (type)
+        {
+            case ObjectType.Mug:
+                _pickedObject.transform.localPosition = new Vector3(0.3683f, -0.1592f, -0.4095f);
+                _pickedObject.transform.localRotation = Quaternion.Euler(-24.79f, -436.193f, -121.874f);
+                break;
+            default:
+                _pickedObject.transform.localPosition = new Vector3(0, -1.3f, 0);
+                _pickedObject.transform.localRotation = Quaternion.identity;
+                break;
+        }
     }
 
     public void DropObject(GameObject obj)
@@ -108,7 +121,7 @@ public class CameraRaycast : MonoBehaviour
         }
     }
     
-    private void HitFeedback()
+    private void PointerFeedback()
     {
         switch (hit.transform.tag)
         {
