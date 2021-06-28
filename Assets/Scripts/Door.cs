@@ -8,7 +8,7 @@ public class Door : MonoBehaviour
     void Start()
     {
         CameraRaycast.script = FindObjectOfType<CameraRaycast>();
-        Rotor.onRotorReady += UnlockDoor;
+        Rotor.OnRotorReady += UnlockDoor;
         animator = transform.parent.GetComponent<Animator>();
     }
 

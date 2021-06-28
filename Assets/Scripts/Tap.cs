@@ -2,7 +2,7 @@
 
 public class Tap : MonoBehaviour
 {
-    private Vector3 mugPosition = new Vector3(4.98f, 1.319f, 14.714f);
+    private readonly Vector3 mugPosition = new Vector3(4.98f, 1.319f, 14.714f);
 
     public void OnPointerClick()
     {

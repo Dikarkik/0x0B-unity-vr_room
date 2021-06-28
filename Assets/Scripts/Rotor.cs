@@ -21,7 +21,7 @@ public class Rotor : MonoBehaviour
     public Transform[] objectPositions;
     public GameObject light;
     public GameObject screenMessage;
-    public static event OnRotorReady onRotorReady;
+    public static event OnRotorReady OnRotorReady;
 
     public void OnPointerClick()
     {
@@ -70,7 +70,7 @@ public class Rotor : MonoBehaviour
                     screenMessage.SetActive(true);
                     CameraRaycast.script.fineMessage.GetComponent<MessageText>().SetText($"working well");
                     CameraRaycast.script.fineMessage.SetActive(true);
-                    onRotorReady();
+                    OnRotorReady();
                 }
                 
                 return;

@@ -4,6 +4,8 @@ public class Battery : MonoBehaviour
 {
     private Material material;
     private Color emissionColor;
+    private static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
+    private static readonly int ColorId = Shader.PropertyToID("_Color");
 
     private void Start()
     {
@@ -15,9 +17,9 @@ public class Battery : MonoBehaviour
     public void SetColor()
     {
         material.color = Color.green;
-        emissionColor = material.GetColor("_Color");
+        emissionColor = material.GetColor(ColorId);
         emissionColor *= Mathf.Pow(2.0F, -0.8f - (0.4169F));
-        material.SetColor("_EmissionColor", emissionColor);
+        material.SetColor(EmissionColorId, emissionColor);
     }
 
     private void Update()

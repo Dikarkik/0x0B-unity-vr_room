@@ -5,7 +5,8 @@ public class Interactable : MonoBehaviour
     private Material material;
     private Color emissionColor;
     public ObjectType objectType;
-    
+    private static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
+
     void Start()
     {
         // Emission Intensity
@@ -20,13 +21,13 @@ public class Interactable : MonoBehaviour
     public void OnPointerEnter()
     {
         material.color = Color.yellow;
-        material.SetColor("_EmissionColor", emissionColor);
+        material.SetColor(EmissionColorId, emissionColor);
     }
 
     public void OnPointerExit()
     {
         material.color = Color.white;
-        material.SetColor("_EmissionColor", Color.black);
+        material.SetColor(EmissionColorId, Color.black);
     }
     
     private void OnCollisionEnter(Collision other)

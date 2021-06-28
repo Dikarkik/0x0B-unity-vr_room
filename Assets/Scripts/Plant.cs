@@ -5,7 +5,7 @@ public class Plant : MonoBehaviour
     public Material healthyMaterial;
     public Material thirstyMaterial;
     public bool isHealthy = true;
-    private MeshRenderer renderer;
+    private MeshRenderer _renderer;
     public PlantType type;
 
     public enum PlantType
@@ -14,7 +14,7 @@ public class Plant : MonoBehaviour
         Leaves
     }
     
-    void Start() => renderer = GetComponent<MeshRenderer>();
+    void Start() => _renderer = GetComponent<MeshRenderer>();
 
     public void OnPointerClick()
     {
@@ -64,7 +64,7 @@ public class Plant : MonoBehaviour
     public void WaterThePlant()
     {
         isHealthy = true;
-        Material[] mats = renderer.materials;
+        Material[] mats = _renderer.materials;
 
         switch (type)
         {
@@ -76,6 +76,6 @@ public class Plant : MonoBehaviour
                 break;
         }
 
-        renderer.materials = mats;
+        _renderer.materials = mats;
     }
 }

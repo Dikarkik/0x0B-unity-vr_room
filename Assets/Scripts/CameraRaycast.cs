@@ -14,8 +14,8 @@ public class CameraRaycast : MonoBehaviour
     public static CameraRaycast script;
     
     // Rayacast
-    private const float _maxDistance = 35;
-    private const float _pickUpDistance = 3.5f;
+    private const float MaxDistance = 35;
+    private const float PickUpDistance = 3.5f;
     private GameObject _gazedAtObject = null;
     private GameObject _pickedObject = null;
     private RaycastHit hit;
@@ -41,8 +41,19 @@ public class CameraRaycast : MonoBehaviour
     
     private void Update()
     {
+        CheckHit();
+
+        PointerFeedback();
+        
+        // Checks for screen touches.
+        if (Google.XR.Cardboard.Api.IsTriggerPressed || Input.GetKeyDown(KeyCode.Space))
+            TriggerPressed();
+    }
+
+    private void CheckHit()
+    {
         // Casts ray towards camera's forward direction, to detect if a GameObject is being gazed at.
-        if (Physics.Raycast(transform.position, transform.forward, out hit, _maxDistance))
+        if (Physics.Raycast(transform.position, transform.forward, out hit, MaxDistance))
         {
             // GameObject detected in front of the camera.
             if (_gazedAtObject != hit.transform.gameObject)
@@ -65,14 +76,8 @@ public class CameraRaycast : MonoBehaviour
             _gazedAtObject.SendMessage("OnPointerExit");
             _gazedAtObject = null;
         }
-        
-        PointerFeedback();
-        
-        // Checks for screen touches.
-        if (Google.XR.Cardboard.Api.IsTriggerPressed || Input.GetKeyDown(KeyCode.Space))
-            TriggerPressed();
     }
-    
+
     private void PickUpObject(GameObject obj)
     {
         _pickedObject = obj;
@@ -154,14 +159,14 @@ public class CameraRaycast : MonoBehaviour
                     DropObject(_pickedObject);
                 else
                 {
-                    if (hit.distance < _pickUpDistance)
+                    if (hit.distance < PickUpDistance)
                         PickUpObject(_gazedAtObject);
                     else
                         goCloserMessage.SetActive(true);
                 }
                 break;
             case "InteractableStatic":
-                if (hit.distance < _pickUpDistance)
+                if (hit.distance < PickUpDistance)
                     hit.transform.SendMessage("OnPointerClick");
                 else
                     goCloserMessage.SetActive(true);
